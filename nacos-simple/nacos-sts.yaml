@@ -33,7 +33,9 @@ spec:
               cpu: "500m"
           ports:
             - containerPort: 8848
+              hostPort: 8848
               name: client
+              protocol: TCP
           env:
             - name: NACOS_REPLICAS
               value: "3"
