@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: lapis-ui
+ namespace: lapis-dev
+ labels:
+   app: lapis-ui
+spec:
+ replicas: 3
+ selector:
+   matchLabels:
+     app: lapis-ui
+ template:
+   metadata:
+      labels:
+        app: lapis-ui
+   spec:
+     containers:
+     - image: harbor.laisontech.com/lapis/lapis-ui-test:latest
+       name: lapis-ui-test
+       imagePullPolicy: Always
+       ports:
+       - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: lapis-ui
+  name: lapis-ui-svc
+  namespace: lapis-dev
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    name: lapis-ui
+  selector:
+    app: lapis-ui
+  type: ClusterIP
