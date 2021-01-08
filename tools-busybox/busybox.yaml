@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  namespace: lapis-dev
+spec:
+  containers:
+  - name: busybox
+    image: busybox:1.28.4
+    #    command:
+    #  - sleep
+    #  - "3600"
+    imagePullPolicy: IfNotPresent
+    args:
+    - /bin/sh
+    - -c
+    - sleep 10; touch /tmp/healthy; sleep 30000
+    readinessProbe:           #就绪探针
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 10         #10s之后开始第一次探测
+      periodSeconds: 5                #第一次探测之后每隔5s探测一次
+  restartPolicy: Always
