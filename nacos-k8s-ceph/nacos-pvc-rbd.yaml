@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-dynamic-pvc
+  namespace: lapis-cmn
+  annotations:
+    volume.beta.kubernetes.io/storage-class: mysql-sc
+spec:
+  accessModes:
+    - ReadWriteOnce
+      #  storageClassName: mysql-sc
+  resources:
+    requests:
+      storage: 10Gi

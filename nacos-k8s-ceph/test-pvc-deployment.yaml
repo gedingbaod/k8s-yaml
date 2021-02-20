@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment
+  namespace: lapis-cmn
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: test-dep
+  template:
+    metadata:
+      labels:
+        app: test-dep
+    spec:
+      containers:
+      - name: test-dep
+        image: nginx
+        volumeMounts:
+          - name: pvc
+            mountPath: "/mnt"
+      volumes:
+        - name: pvc
+          persistentVolumeClaim:
+            claimName: cephfs-pvc

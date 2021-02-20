@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nacos
+  namespace: lapis-cmn
+spec:
+  serviceName: nacos-headless
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nacos
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                      - nacos
+              topologyKey: "kubernetes.io/hostname"
+      serviceAccountName: cephfs-provisioner
+      #initContainers:
+      #  - name: peer-finder-plugin-install
+      #    image: nacos/nacos-peer-finder-plugin:1.0
+      #    imagePullPolicy: Always
+      #    volumeMounts:
+      #      - mountPath: /home/nacos/plugins/peer-finder
+      #        name: plguindir
+      containers:
+        - name: nacos
+          imagePullPolicy: Always
+          image: nacos/nacos-server:latest
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8848
+              name: client-port
+            - containerPort: 7848
+              name: rpc
+          env:
+            - name: NACOS_REPLICAS
+              value: "3"
+              #- name: SERVICE_NAME
+              #value: "nacos-headless"
+              #- name: DOMAIN_NAME
+              #value: "cluster.local"
+              #- name: POD_NAMESPACE
+              #valueFrom:
+              #  fieldRef:
+              #    apiVersion: v1
+              #    fieldPath: metadata.namespace
+            - name: MYSQL_SERVICE_HOST
+              #value: "10.42.6.215"
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.db.host
+            - name: MYSQL_SERVICE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.db.name
+            - name: MYSQL_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.port
+            - name: MYSQL_SERVICE_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.user
+            - name: MYSQL_SERVICE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.password
+            - name: MODE
+              value: "cluster"
+            - name: NACOS_SERVER_PORT
+              value: "8848"
+              #- name: NACOS_APPLICATION_PORT
+              #value: "8848"
+
+            - name: PREFER_HOST_MODE
+              value: "hostname"
+            - name: MYSQL_SERVICE_DB_PARAM
+              value: "characterEncoding=utf8&connectTimeout=10000&socketTimeout=3000&autoReconnect=true"
+            - name: NACOS_SERVERS
+              value: "nacos-0.nacos-headless.lapis-cmn.svc.cluster.local:8848 nacos-1.nacos-headless.lapis-cmn.svc.cluster.local:8848 nacos-2.nacos-headless.lapis-cmn.svc.cluster.local:8848"
+          volumeMounts:
+                  #- name: plguindir
+                  #  mountPath: /home/nacos/plugins/peer-finder
+            - name: datadir
+              mountPath: /home/nacos/data
+            - name: logdir
+              mountPath: /home/nacos/logs
+  volumeClaimTemplates:
+          #    - metadata:
+          #        name: plguindir
+          #      spec:
+          #        accessModes: [ "ReadWriteMany" ]
+          #        storageClassName: "cephfs-sc"
+          #        resources:
+          #          requests:
+          #  storage: 5Gi
+    - metadata:
+        name: datadir
+      spec:
+        accessModes: [ "ReadWriteMany" ]
+        storageClassName: "cephfs-sc"
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: logdir
+      spec:
+        accessModes: [ "ReadWriteMany" ]
+        storageClassName: "cephfs-sc"
+        resources:
+          requests:
+            storage: 5Gi
+  selector:
+    matchLabels:
+      app: nacos

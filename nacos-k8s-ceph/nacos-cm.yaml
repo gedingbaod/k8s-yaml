@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nacos-cm
+  namespace: lapis-cmn
+data:
+  mysql.db.name: "nacos_devtest"
+  mysql.db.host: "mysql-headless"
+  #  mysql.db.host: "10.42.6.215"
+  mysql.port: "3306"
+  mysql.user: "nacos"
+  mysql.password: "nacos"
