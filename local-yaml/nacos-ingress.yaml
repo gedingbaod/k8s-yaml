@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nacos-ingress
+  namespace: lapis-dev
+spec:
+  rules:
+    - host: nacos.laisontech.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: nacos-service
+              servicePort: web

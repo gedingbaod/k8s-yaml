@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: monitor-ingress
+  namespace: lapis-test
+  annotations:
+    kubernets.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: monitor.test.laisontech.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: lapis-monitor-web-svc
+              servicePort: 9590

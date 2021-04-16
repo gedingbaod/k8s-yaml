@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: admin-ingress
+  namespace: lapis-dev
+spec:
+  rules:
+    - host: admin.laisontech.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: lapis-monitor-web-svc
+              servicePort: 9590

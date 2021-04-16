@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: lapis-ui-admin-ingress
+  namespace: lapis-dev
+  annotations:
+    kubernets.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: admin.laisontech.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: lapis-ui-admin-svc
+              servicePort: 81

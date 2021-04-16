@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test
+  namespace: lapis-dev
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      nodeSelector: 
+        runtype: test
+      containers:
+      - name: test
+        image: nginx:1.14.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: "/data"
+            name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: test-pvc
+  selector:
+    matchLabels:
+      app: test 
+
