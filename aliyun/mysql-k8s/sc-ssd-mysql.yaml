@@ -1,0 +1,14 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: alicloud-disk-common-hangzhou-b
+  namespace: lapis-cmn
+provisioner: alicloud/disk
+reclaimPolicy: Retain
+parameters:
+  type: cloud_ssd
+  regionid: cn-hangzhou
+  zoneid: cn-hangzhou-b
+  fstype: "ext4"
+  readonly: "false"
+  encrypted: "true"

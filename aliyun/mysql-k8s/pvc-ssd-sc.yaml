@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: disk-ssd
+  namespace: lapis-cmn
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: alicloud-disk-common-hangzhou-b
+  resources:
+    requests:
+      storage: 5Gi
