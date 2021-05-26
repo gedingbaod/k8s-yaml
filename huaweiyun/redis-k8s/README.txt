@@ -17,4 +17,4 @@ spring:
       #设置命令的执行时间，如果超过这个时间，则报错;
       command-timeout: 5000
       #设置redis集群的节点信息，其中namenode为域名解析，通过解析域名来获取相应的地址;
-      nodes: redis-cluster-0.redis-headless.lapis-cmn:6379redis-cluster-1.redis-headless.lapis-cmn:6379redis-cluster-2.redis-headless.lapis-cmn:6379redis-cluster-3.redis-headless.lapis-cmn:6379redis-cluster-4.redis-headless.lapis-cmn:6379redis-cluster-5.redis-headless.lapis-cmn:6379
+      nodes: redis-cluster-0.redis-headless.lapis-cmn:6379,redis-cluster-1.redis-headless.lapis-cmn:6379,redis-cluster-2.redis-headless.lapis-cmn:6379,redis-cluster-3.redis-headless.lapis-cmn:6379,redis-cluster-4.redis-headless.lapis-cmn:6379,redis-cluster-5.redis-headless.lapis-cmn:6379
