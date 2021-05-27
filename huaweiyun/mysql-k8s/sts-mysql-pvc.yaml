@@ -16,6 +16,7 @@ spec:
       annotations:
         everest.io/disk-volume-type: SAS
       labels:
+        # https://developer.huaweicloud.com/endpoint
         failure-domain.beta.kubernetes.io/region: cn-east-3
         failure-domain.beta.kubernetes.io/zone: cn-east-3c
     spec:
