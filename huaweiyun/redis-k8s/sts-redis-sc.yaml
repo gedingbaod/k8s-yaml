@@ -64,7 +64,7 @@ spec:
           name: client
         - containerPort: 16379
           name: gossip
-        command: ["/conf/update-node.sh", "redis-server", "/conf/redis.conf"]
+        command: ["/conf/update-node.sh", "redis-server", "/conf/redis.conf", "--cluster-announce-ip", "$(POD_IP)"]
         env:
         - name: POD_IP
           valueFrom:
