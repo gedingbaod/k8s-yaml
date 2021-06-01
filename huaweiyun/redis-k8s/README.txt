@@ -6,8 +6,11 @@ kubectl exec -it redis-cluster-0 -- redis-cli --cluster create --cluster-replica
 
 kubectl get pods -l app=redis-cluster -o jsonpath='{range.items[*]}{.status.podIP}:6379 '
 
-kubectl exec -it redis-cluster-0 -- redis-cli --cluster create --cluster-replicas 1 172.17.1.10:6379 172.17.0.140:6379 172.17.0.11:6379 172.17.0.12:6379 172.17.0.141:6379 172.17.1.11:6379
-
+kubectl exec -it redis-cluster-0 -- redis-cli --cluster create --cluster-replicas 1 172.17.1.15:6379 172.17.0.13:6379 172.17.0.146:6379 172.17.0.14:6379 172.17.1.17:6379 172.17.0.145:6379 
+# 查看集群状态
+kubectl exec -it redis-cluster-0 -- redis-cli cluster info
+# 查看集群节点
+kubectl exec -it redis-cluster-0 -- redis-cli cluster nodes
 
 #springclude配置
 spring:
@@ -22,7 +25,7 @@ spring:
 
 
 
-#清空
+#手工处理集群重启问题
 
 kubectl exec -it redis-cluster-0 -- redis-cli flushall &&
 kubectl exec -it redis-cluster-1 -- redis-cli flushall &&
@@ -30,6 +33,13 @@ kubectl exec -it redis-cluster-2 -- redis-cli flushall &&
 kubectl exec -it redis-cluster-3 -- redis-cli flushall &&
 kubectl exec -it redis-cluster-4 -- redis-cli flushall &&
 kubectl exec -it redis-cluster-5 -- redis-cli flushall
+
+kubectl exec -it redis-cluster-0 -- redis-cli cluster reset &&
+kubectl exec -it redis-cluster-1 -- redis-cli cluster reset &&
+kubectl exec -it redis-cluster-2 -- redis-cli cluster reset &&
+kubectl exec -it redis-cluster-3 -- redis-cli cluster reset &&
+kubectl exec -it redis-cluster-4 -- redis-cli cluster reset &&
+kubectl exec -it redis-cluster-5 -- redis-cli cluster reset
 
 kubectl exec -it redis-cluster-0 -- rm -fr dump.rdb nodes.conf appendonly.aof &&
 kubectl exec -it redis-cluster-1 -- rm -fr dump.rdb nodes.conf appendonly.aof &&
@@ -46,3 +56,6 @@ kubectl exec -it redis-cluster-4 -- ls &&
 kubectl exec -it redis-cluster-5 -- ls
 
 
+kubectl get pods -l app=redis-cluster -o jsonpath='{range.items[*]}{.status.podIP}:6379 '
+
+kubectl exec -it redis-cluster-0 -- redis-cli --cluster create --cluster-replicas 1 172.17.1.15:6379 172.17.0.13:6379 172.17.0.146:6379 172.17.0.14:6379 172.17.1.17:6379 172.17.0.145:6379 
