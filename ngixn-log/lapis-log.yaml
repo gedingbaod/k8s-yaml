@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lapis-log-cephfs
+  namespace: lapis-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log
+  template:
+    metadata:
+      labels:
+        app: log
+    spec:
+      containers:
+      - name: log
+        #image: nginx:latest
+        image: harbor.laisontech.com/lapis/nginx:v1.21.0
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: "/data"
+            name: data
+          - mountPath: "/etc/nginx/conf.d"
+            name: nginx-default-config
+            #subPath: default.conf
+          - mountPath: "/etc/nginx/nginx.conf"
+            name: nginx-config
+            subPath: nginx.conf
+      nodeSelector:
+        runtype: test
+      volumes:
+        - name: data
+          cephfs:
+            monitors:
+              - 192.168.2.131:6789
+              - 192.168.2.132:6789
+              - 192.168.2.133:6789
+            path: /log-root
+            user: admin
+            secretRef:
+              name: ceph-secret
+        - name: nginx-default-config
+          configMap:
+            name: cm-nginx-default-config
+        - name: nginx-config
+          configMap:
+            name: cm-nginx-config

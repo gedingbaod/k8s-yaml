@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lapis-log-svc
+  namespace: lapis-dev
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    nodePort: 30081
+  selector:
+    app: log
+  type: NodePort
