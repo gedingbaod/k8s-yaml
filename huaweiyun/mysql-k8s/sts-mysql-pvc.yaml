@@ -81,6 +81,8 @@ spec:
           subPath: mysql
         - name: conf
           mountPath: /etc/mysql/conf.d
+#      imagePullSecrets:
+#      - name: test          
       containers:
       - name: mysql
         image: mysql:5.7

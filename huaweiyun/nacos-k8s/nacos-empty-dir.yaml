@@ -71,6 +71,8 @@ spec:
 #            - mountPath: /home/nacos/plugins/peer-finder
 #              name: data
 #              subPath: peer-finder
+#      imagePullSecrets:
+#      - name: test
       containers:
         - name: nacos
           imagePullPolicy: Always
