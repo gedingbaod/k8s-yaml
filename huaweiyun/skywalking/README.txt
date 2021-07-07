@@ -1,3 +1,25 @@
+0.安装Helm
+wget https://mirrors.huaweicloud.com/helm/v3.6.2/helm-v3.6.2-linux-amd64.tar.gz
+
+# 解压 Helm
+tar -zxvf helm-v3.6.2-linux-amd64.tar.gz
+
+# 复制客户端执行文件到 bin 目录下，方便在系统下能执行 helm 命令
+cp linux-amd64/helm /usr/local/bin/
+
+# 检查
+helm version
+helm env
+
+# 添加仓库
+helm repo add microsoft https://microsoft.github.io/charts/repo
+helm repo add elastic https://helm.elastic.co
+helm dep up skywalking
+helm repo update
+
+# 把k8s环境变量KUBECONFIG进行配置
+export KUBECONFIG=/root/.kube/config #可以写到/etc/profile里
+
 
 1.部署skywalking的oap
 
