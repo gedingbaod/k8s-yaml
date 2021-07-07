@@ -74,7 +74,7 @@ RUN set -eux && mkdir -p /usr/skywalking/agent
 add ./agent /usr/skywalking/agent
 WORKDIR /
 
-docker build .  -t <harbor.laisontech.com/lapis>/skywalking-agent-sidecar
+docker build .  -t <harbor.laisontech.com/lapis>/skywalking-agent-sidecar:8.6.0
 
 docker push <harbor.laisontech.com/lapis>/skywalking-agent-sidecar:8.6.0
 
