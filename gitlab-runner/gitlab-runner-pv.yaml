@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    pv: gitlab-runner-pv
+  name: gitlab-runner-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+  - ReadWriteMany
+  hostPath:
+    path: /data/k8s/mnt/gitlab-runner
+    type: ""
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: manual
+  volumeMode: Filesystem
