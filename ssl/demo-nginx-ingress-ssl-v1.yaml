@@ -1,0 +1,22 @@
+#apiVersion: extensions/v1beta1
+#apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-nginx-ingress-ssl-v1
+spec:
+  tls:
+  - hosts:
+      - ssl.laisontech.com
+    secretName: demo-secret
+  rules:
+  - host: ssl.laisontech.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: demo-nginx-svc-ssl
+            port:
+              number: 80

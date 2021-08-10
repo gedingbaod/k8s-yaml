@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: lapis-ui-ingress-lab-ssl
+  namespace: lapis-lab
+  annotations:
+    kubernets.io/ingress.class: "nginx"
+    #    nginx.ingress.kubernetes.io/proxy-connect-timeout: '30'
+    #    nginx.ingress.kubernetes.io/proxy-send-timeout: '500'
+    #    nginx.ingress.kubernetes.io/proxy-read-timeout: '500'
+    #    nginx.ingress.kubernetes.io/send-timeout: "500"
+    #    nginx.ingress.kubernetes.io/enable-cors: "true"
+    #    nginx.ingress.kubernetes.io/cors-allow-origin: "https://lapis.lab.laisontech.com"
+    #    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST, DELETE, PATCH, OPTIONS"
+    #    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
+    #    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    #    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    #    nginx.ingress.kubernetes.io/ssl-ciphers: "ALL:!aNULL:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP"
+spec:
+  tls:
+  - hosts:
+      - lapis.lab.laisontech.com
+    secretName: demo-secret
+  rules:
+          #    - host: lapis.lab.laisontech.com
+          #      http:
+          #        paths:
+          #          - path: /
+          #            backend:
+          #              serviceName: lapis-ui-svc
+          #              servicePort: 443
+    - host: lapis.lab.laisontech.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: lapis-ui-svc
+              servicePort: 80
