@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-stdalone
+  namespace: lapis-cmn
+  labels:
+    name: mysql-stdalone
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: mysql-pod
+  template:
+    metadata:
+      labels: 
+        name: mysql-pod
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "123456"
