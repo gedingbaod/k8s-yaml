@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: seata-server
+  namespace: lapis-prod
+  labels:
+    k8s-app: seata-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: seata-server
+  template:
+    metadata:
+      labels:
+        k8s-app: seata-server
+    spec:
+      containers:
+        - name: seata-server
+          image: swr.cn-east-3.myhuaweicloud.com/lapis/seata-server:1.4.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8091
+              protocol: TCP
+          env:
+            - name: SEATA_PORT
+              value: "8091"
+            - name: STORE_MODE
+              value: file
+#            - name: SEATA_CONFIG_NAME
+#              value: file:/root/seata-config/registry
+          ports:
+            - name: http
+              containerPort: 8091
+              protocol: TCP
+          volumeMounts:
+            - name: seata-config-registery
+              mountPath: /seata-server/resources/registry.conf
+              subPath: registry.conf
+            - name: seata-config-file
+              mountPath: /seata-server/resources/file.conf
+              subPath: file.conf
+      volumes:
+        - name: seata-config-registery
+          configMap:
+            name: cm-seata-registery
+        - name: seata-config-file
+          configMap:
+            name: cm-seata-file
