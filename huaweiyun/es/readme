@@ -1,0 +1,26 @@
+# 拉取es镜像
+docker pull docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+# 打tag
+docker tag docker.elastic.co/elasticsearch/elasticsearch:7.5.1 harbor.laisontech.com/lapis/docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+# 传到本地厂库
+docker push harbor.laisontech.com/lapis/docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+
+# 拉取kibana
+docker pull docker.elastic.co/kibana/kibana:7.5.1
+# 打tag
+docker tag docker.elastic.co/kibana/kibana:7.5.1 harbor.laisontech.com/lapis/docker.elastic.co/kibana/kibana:7.5.1
+# 传到本地仓库
+docker push harbor.laisontech.com/lapis/docker.elastic.co/kibana/kibana:7.5.1
+
+# 创建命名空间
+kubectl create ns lapis-cmn
+
+# 创建hostpath 形式的 pv
+cd es
+kubectl apply -f k8s-pv-es.yaml -n lapis-cmn
+
+# 创建es集群
+kubectl apply -f k8s-es-cluster.yaml -n lapis-cmn
+
+# 创建kibana
+kubectl apply -f k8s-kibana-ui.yaml -n lapis-cmn
