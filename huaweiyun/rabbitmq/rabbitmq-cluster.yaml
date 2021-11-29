@@ -1,0 +1,47 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq-cluster-security
+  namespace: lapis-cmn
+  labels:
+    app: rabbitmq
+spec:
+  image: swr.cn-east-3.myhuaweicloud.com/lapis/rabbitmq:3.8.21-management
+  replicas: 3
+  persistence:
+    # huawei storage
+    storageClassName: csi-disk-sas
+    storage: 20Gi
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  override:
+    statefulSet:
+      spec:
+        replicas: 3
+        template:
+          metadata:
+            labels:
+              app: rabbitmq-pod
+          spec:
+            securityContext: {} 
+            containers: []
+            initContainers:
+            - name: setup-container
+              securityContext: {}
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  podAffinityTerm:
+                    labelSelector:
+                      matchExpressions:
+                      - key: app
+                        operator: In
+                        values:
+                        - rabbitmq-pod
+                    topologyKey: "kubernetes.io/hostname"
