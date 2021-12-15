@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata: 
   name: seata-server
-  namespace: lapis-prod
+  namespace: lapis-cmn
   labels:
     k8s-app: seata-server
 spec:

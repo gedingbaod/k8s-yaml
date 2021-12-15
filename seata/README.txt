@@ -10,6 +10,6 @@ docker push swr.cn-east-3.myhuaweicloud.com/lapis/seata-server:1.4.2
 
 
 # create configmap
-kubectl create configmap  cm-seata-registery --from-file=./registry.conf -n lapis-prod
+kubectl create configmap  cm-seata-registery --from-file=./registry.conf -n lapis-cmn
 
-kubectl create configmap  cm-seata-file --from-file=./file.conf -n lapis-prod
+kubectl create configmap  cm-seata-file --from-file=./file.conf -n lapis-cmn
