@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm-mysql
+  namespace: lapis-cmn
+  labels:
+    app: mysql
+data:
+  master.cnf: |
+    # Apply this config only on the master.
+    [mysqld]
+    log-bin
+    log_bin_trust_function_creators=1
+    lower_case_table_names=1
+    default-storage-engine=INNODB
+    character_set_server=utf8mb4
+    innodb_default_row_format=DYNAMIC
+    innodb_large_prefix=ON
+    innodb_file_format=Barracuda
+    innodb_log_file_size=4G
+    max_user_connections=2000
+    max_connections=32000
+    max_allowed_packet=20M
+  slave.cnf: |
+    # Apply this config only on slaves.
+    [mysqld]
+    super-read-only
+    log_bin_trust_function_creators=1
+    lower_case_table_names=1
+    default-storage-engine=INNODB
+    character_set_server=utf8mb4
+    innodb_default_row_format=DYNAMIC
+    innodb_large_prefix=ON
+    innodb_file_format=Barracuda
+    innodb_log_file_size=4G
+    max_user_connections=2000
+    max_connections=32000
+    max_allowed_packet=20M
