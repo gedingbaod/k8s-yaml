@@ -35,6 +35,7 @@ spec:
         - name: nacos
           imagePullPolicy: Always
           #image: nacos/nacos-server:latest
+          #image: nacos/nacos-server:v2.0.4
           image: nacos/nacos-server:1.4.1
           resources:
             requests:
