@@ -17,20 +17,36 @@ kubectl get customresourcedefinitions.apiextensions.k8s.io
 # apply k8s yaml
 kubectl apply -f rabbitmq-cluster.yaml
 
+# apply nodeport yaml
+kubectl apply -f rabbitmq-cluster-security-np.yaml
+
 # add ingress domain cmn-ssl
 rabbitmq.laison.top
 
 # get user password
 username="$(kubectl -n lapis-cmn get secret rabbitmq-cluster-security-default-user -o jsonpath='{.data.username}' | base64 --decode)"
+echo $username
 default_user_iKUN4RWdsEpjX5EPxGn
+
 password="$(kubectl -n lapis-cmn get secret rabbitmq-cluster-security-default-user -o jsonpath='{.data.password}' | base64 --decode)"
+echo $password
 ZVmnAn7ZwTntvZHfFExl3v-fPneyAI8k
 
 # login http
 
+# add user
+admin Admin123
+lapis lapis
+
 # add vhost
+pre prod test
+set permission
 
 # add policy
+pre-ha prod-ha
+pre prod
+^.
+ha-mode=all
 
 # test queue
 
@@ -39,6 +55,10 @@ rabbit@rabbitmq-cluster-security-server-0.rabbitmq-cluster-security-nodes.lapis-
 k -n lapis-cmn exec -it rabbitmq-cluster-security-server-0 -- rabbitmqctl stop_app
 k -n lapis-cmn exec -it rabbitmq-cluster-security-server-0 -- rabbitmqctl change_cluster_node_type ram
 k -n lapis-cmn exec -it rabbitmq-cluster-security-server-0 -- rabbitmqctl start_app
+
+k -n lapis-cmn exec -it rabbitmq-cluster-security-server-1 -- rabbitmqctl stop_app
+k -n lapis-cmn exec -it rabbitmq-cluster-security-server-1 -- rabbitmqctl change_cluster_node_type ram
+k -n lapis-cmn exec -it rabbitmq-cluster-security-server-1 -- rabbitmqctl start_app
 
 # use
 https://rabbitmq.laison.top
