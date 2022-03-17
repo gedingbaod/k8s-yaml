@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: elasticsearch
+  name: es-nodeport
+  namespace: lapis-cmn
+spec:
+  clusterIP: 10.247.50.88
+  ports:
+  - name: rest
+    nodePort: 30092
+    port: 9200
+    protocol: TCP
+    targetPort: 9200
+  - name: inter-node
+    nodePort: 30093
+    port: 9300
+    protocol: TCP
+    targetPort: 9300
+  selector:
+    app: elasticsearch
+  sessionAffinity: None
+  type: NodePort

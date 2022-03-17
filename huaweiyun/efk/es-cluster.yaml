@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: es-cluster
+  namespace: lapis-cmn
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: elasticsearch
+  serviceName: es-headless
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: elasticsearch
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - elasticsearch
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                - master
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - env:
+        - name: cluster.name
+          value: k8s-logs
+        - name: node.name
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: discovery.seed_hosts
+          value: es-cluster-0.es-headless,es-cluster-1.es-headless,es-cluster-2.es-headless
+        - name: cluster.initial_master_nodes
+          value: es-cluster-0,es-cluster-1,es-cluster-2
+        - name: ES_JAVA_OPTS
+          value: -Xms512m -Xmx512m
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+        imagePullPolicy: IfNotPresent
+        name: elasticsearch
+        ports:
+        - containerPort: 9200
+          name: rest
+          protocol: TCP
+        - containerPort: 9300
+          name: inter-node
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "1"
+          requests:
+            cpu: 100m
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - chown -R 1000:1000 /usr/share/elasticsearch/data
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        name: fix-permissions
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
+      - command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        name: increase-vm-max-map
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - command:
+        - sh
+        - -c
+        - ulimit -n 65536
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        name: increase-fd-ulimit
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: elasticsearch
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: es
+      volumeMode: Filesystem

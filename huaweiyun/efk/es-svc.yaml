@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: elasticsearch
+  name: es-svc
+  namespace: lapis-cmn
+spec:
+  ports:
+  - name: rest
+    port: 9200
+    protocol: TCP
+    targetPort: 9200
+  - name: inter-node
+    port: 9300
+    protocol: TCP
+    targetPort: 9300
+  selector:
+    app: elasticsearch
+  sessionAffinity: None
+  type: ClusterIP
