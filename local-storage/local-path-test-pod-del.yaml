@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-test-del
+spec:
+  containers:
+  - name: volume-test-del
+    image: nginx:stable-alpine
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+    - name: volv
+      mountPath: /data
+    ports:
+    - containerPort: 80
+  volumes:
+  - name: volv
+    persistentVolumeClaim:
+      claimName: local-path-retain-pvc-del
