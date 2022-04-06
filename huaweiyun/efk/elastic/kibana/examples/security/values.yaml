@@ -1,0 +1,44 @@
+---
+elasticsearchHosts: "https://multi-master:9200"
+
+extraEnvs:
+  - name: "KIBANA_ENCRYPTION_KEY"
+    valueFrom:
+      secretKeyRef:
+        name: kibana
+        key: encryptionkey
+  - name: "ELASTICSEARCH_USERNAME"
+    value: "kibana_system"
+#    valueFrom:
+#      secretKeyRef:
+#        #name: security-master-credentials
+#        name: multi-master-credentials
+#        #name: multi-kibana-credentials
+#        key: username
+  - name: "ELASTICSEARCH_PASSWORD"
+    value: "Admin123"
+#    valueFrom:
+#      secretKeyRef:
+#        #name: security-master-credentials
+#        name: multi-master-credentials
+#        #name: multi-kibana-credentials
+#        key: password
+
+kibanaConfig:
+  kibana.yml: |
+    server.ssl:
+      enabled: true
+      key: /usr/share/kibana/config/certs/elastic-certificate.pem
+      certificate: /usr/share/kibana/config/certs/elastic-certificate.pem
+    xpack.security.encryptionKey: ${KIBANA_ENCRYPTION_KEY}
+    elasticsearch.ssl:
+      certificateAuthorities: /usr/share/kibana/config/certs/elastic-certificate.pem
+      verificationMode: certificate
+    i18n.locale: "zh-CN"
+
+protocol: https
+
+secretMounts:
+  - name: elastic-certificate-pem
+    secretName: elastic-certificate-pem
+    path: /usr/share/kibana/config/certs
