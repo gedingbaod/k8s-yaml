@@ -1,3 +1,13 @@
+0. 安装local-storage插件
+1. 将es-limits.conf做一个configmap
+kubectl -n lapis-es create configmap es-limits --from-file=./es-limits.conf
+2. 将values.yaml /multi/Makefile /helper/examples.mk替换掉原有文件
+
+3. 在multi里运行make test 创建集群
+默认Namesapce lapis-es
+4. 获取用户名密码
+kubectl get secrets --namespace=lapis-es multi-master-credentials -ojsonpath='{.data.username}' | base64 -d
+kubectl get secrets --namespace=lapis-es multi-master-credentials -ojsonpath='{.data.password}' | base64 -d
 
 
 
